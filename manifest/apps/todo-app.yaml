@@ -73,3 +73,16 @@ spec:
     targetPort: 8080
   tls:
     termination: edge
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-credentials
+  namespace: mad-roadshow
+type: Opaque
+data:
+  POSTGRES_USER: dGFzay11c2Vy
+  POSTGRES_PASSWORD: bXlzZWNyZXRwYXNzd29yZA==
+  POSTGRES_DB: dGFzaw==
+  POSTGRES_PORT: NTQzMg==
+
