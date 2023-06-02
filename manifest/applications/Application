@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: todolist-app
+  namespace: openshift-gitops
+spec:
+  destination:
+    namespace: mad-roadshow
+    server: https://kubernetes.default.svc
+  project: mad-roadshow
+  source:
+    path: argo/apps
+    repoURL: https://github.com/feven/mad-roadshow.git
+    targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false
+    syncOptions:
+    - CreateNamespace=true

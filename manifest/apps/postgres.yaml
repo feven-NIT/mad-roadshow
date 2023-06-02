@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres
-  namespace: todo-demo
+  namespace: mad-roadshow
 spec:
   replicas: 1
   selector:
@@ -15,8 +15,7 @@ spec:
     spec:
       volumes:
       - name: postgres-storage
-        persistentVolumeClaim:
-          claimName: postgres-pvc
+        emptyDir: {}
       containers:
       - name: postgres
         image: registry.redhat.io/rhel8/postgresql-12:latest
@@ -48,23 +47,10 @@ spec:
           mountPath: /var/lib/pgsql/data
 ---
 apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: postgres-pvc
-  namespace: todo-demo
-spec:
-  accessModes:
-  - ReadWriteOnce
-  storageClassName: ocs-storagecluster-ceph-rbd
-  resources:
-    requests:
-      storage: 10Gi
----
-apiVersion: v1
 kind: Service
 metadata:
   name: postgres-service
-  namespace: todo-demo
+  namespace: mad-roadshow
 spec:
   selector:
     app: postgres
