@@ -9,8 +9,8 @@ spec:
     server: https://kubernetes.default.svc
   project: mad-roadshow
   source:
-    path: argo/apps
-    repoURL: https://github.com/feven/mad-roadshow.git
+    path: manifest/apps
+    repoURL: https://github.com/feven-redhat/mad-roadshow.git
     targetRevision: main
   syncPolicy:
     automated:

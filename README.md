@@ -17,36 +17,42 @@ podman run --name postgres-db -e POSTGRES_USER=feven -e POSTGRES_PASSWORD=redhat
 mvn quarkus:dev
 ```
 
-## Openshift
+## Prerequisites
+
+Create a namespace and label the namespace if you want to use it to deploy the application with argocd.
 
 ```shell
-oc apply -f manifest/todo-app.yaml
-oc apply -f  manifest/postgres.yaml
+oc new-project mad-roadshow
+oc label namespace mad-roadshow argocd.argoproj.io/managed-by=openshift-gitops
+```
+
+## Openshift
+
+
+```shell
+oc apply -f manifest/applications/application.yaml
+oc apply -f manifest/apps/todo-app.yaml
+oc apply -f  manifest/apps/postgres.yaml
 oc apply -f manifest/quarkus-app-config.yaml
-oc create secret generic postgres-credentials -n todo-demo    --from-literal=POSTGRES_USER=task-user     --from-literal=POSTGRES_PASSWORD=mysecretpassword     --from-literal=POSTGRES_DB=task     --from-literal=POSTGRES_PORT=5432
+oc create secret generic postgres-credentials -n mad-roadshow    --from-literal=POSTGRES_USER=task-user     --from-literal=POSTGRES_PASSWORD=mysecretpassword     --from-literal=POSTGRES_DB=task     --from-literal=POSTGRES_PORT=5432
 ```
 Get the url
 
 ```shell
-oc get route -n todo-demo -o json | jq -r '.items[0].spec.host' | sed 's/^/https:\/\//'
+oc get route -n mad-roadshow -o json | jq -r '.items[0].spec.host' | sed 's/^/https:\/\//'
 ```
 
-# DIY Package the app
+## Argocd
 
 ```shell
-cd todo-demo
-
-./mvnw package
-
-podman build -f src/main/docker/Dockerfile.jvm -t quay.io/feven/todoapp:latest .
-podman tag quay.io/feven/todoapp:latest quay.io/feven/todoapp:$APP_VERSION
-podman push quay.io/feven/todoapp:$APP_VERSION
-podman push quay.io/feven/todoapp:latest   
+oc apply -f manifest/applications/project.yaml
+oc apply -f manifest/applications/application.yaml
 ```
+
 
 # Clean
 
 ```shell
-oc delete ns todo-demo
+oc delete ns mad-roadshow
 ```
  
